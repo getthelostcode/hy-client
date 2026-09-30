@@ -1,0 +1,19 @@
+node_id: node-01
+server_url: http://127.0.0.1:8080
+server_secret: "replace-with-your-hmac-secret"
+
+hysteria:
+  api_url: http://127.0.0.1:9999
+  secret: "replace-with-hysteria-api-secret"
+
+intervals:
+  traffic_report: 10s
+  kick_check: 15s
+  heartbeat: 30s
+
+cache:
+  path: /var/lib/hy-client/cache.json
+  max_entries: 10000
+
+log:
+  level: info

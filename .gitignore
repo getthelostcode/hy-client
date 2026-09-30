@@ -1,0 +1,11 @@
+# Go 编译产物
+hy-client
+*.tar.gz
+
+# IDE
+.vscode/
+.idea/
+
+# 系统缓存
+cache.json
+cache.json.tmp

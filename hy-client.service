@@ -1,0 +1,58 @@
+# hy-client.service — Hysteria v2 代理管理 Client 的 systemd 单元文件
+#
+# 安装步骤：
+#   1. 将编译好的 hy-client 二进制复制到 /usr/local/bin/
+#      cp /root/hy-client/hy-client /usr/local/bin/
+#   2. 将 config.yaml 放到 /etc/hy-client/config.yaml
+#   3. 创建缓存目录
+#      mkdir -p /var/lib/hy-client
+#      chown root:root /var/lib/hy-client
+#      chmod 755 /var/lib/hy-client
+#   4. 复制此 unit 文件到 /etc/systemd/system/hy-client.service
+#   5. systemd daemon-reload && systemctl enable --now hy-client
+#
+# 日志查看：
+#   journalctl -u hy-client -f
+
+[Unit]
+Description=Hysteria v2 代理管理 Client
+Documentation=https://github.com/getthelostcode/hy-client
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/var/lib/hy-client
+
+# 二进制路径（请根据实际情况修改）
+ExecStart=/usr/local/bin/hy-client -config /etc/hy-client/config.yaml
+
+# 重启策略
+Restart=on-failure
+RestartSec=5s
+
+# 信号处理：systemd 会在停止时发送 SIGTERM，本程序会捕获并优雅退出
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+# 资源限制（防止单节点失控）
+LimitNOFILE=65535
+LimitNPROC=64
+
+# 安全加固（非 root 部署时可取消注释）
+# User=nobody
+# Group=nogroup
+# ProtectSystem=strict
+# ProtectHome=yes
+# ReadWritePaths=/var/lib/hy-client
+# NoNewPrivileges=yes
+
+# 日志
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hy-client
+
+[Install]
+WantedBy=multi-user.target
